@@ -3,9 +3,15 @@
 
 #include <iostream>
 
+using namespace std;
+
 int main()
 {
-    std::cout << "Hello World!\n";
+    constexpr int WORLD_LENGTH = 5;
+    cout << "Welcome to Bulls and Cows, a fun word game!" << endl;
+    cout << "Can you guess the " << WORLD_LENGTH;
+    cout << " letter isogram I'm thinking of?\n";
+    return 0;
 }
 
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
