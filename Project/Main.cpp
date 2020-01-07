@@ -26,9 +26,9 @@ int main()
 void PrintIntro() 
 {
     constexpr int WORLD_LENGTH = 9;
-    cout << "Welcome to Bulls and Cows, a fun word game!\n";
-    cout << "Can you guess the " << WORLD_LENGTH;
-    cout << " letter isogram I'm thinking of?\n";
+    cout << "Witamy w grze Bulls and Cows, najlepszej grze slownej!\n";
+    cout << "Czy potrafisz zgadnac " << WORLD_LENGTH;
+    cout << " literowe slowo, o ktorym wlasnie mysle?\n";
     cout << endl;
     return;
 }
@@ -40,7 +40,7 @@ void PlayGame()
 	constexpr int NUMBER_OF_TURNS = 5;
 	for (int count = 1; count <= NUMBER_OF_TURNS; count++) {
 		string Guess = GetGuess();
-		cout << "Your guess was: " << Guess << endl;
+		cout << "Twoja propozycja: " << Guess << endl;
 		cout << endl;
 	}
 
@@ -50,7 +50,7 @@ void PlayGame()
 string GetGuess()
 {
     // get a guess from the player
-    cout << "Enter your guess: ";
+    cout << "Wpisz swoja propozycje: ";
     string Guess = "";
     getline(cin, Guess);
     return Guess;
@@ -58,8 +58,8 @@ string GetGuess()
 
 bool AskToPlayAgain()
 {
-    cout << "Do you want to play again? (yes/no)";
+    cout << "Chcesz sprobowac jeszcze raz? (Tak/Nie)";
     string Response = "";
     getline(cin, Response);
-    return (Response[0] == 'y') || (Response[0] == 'Y');
+    return (Response[0] == 't') || (Response[0] == 'T');
 }
