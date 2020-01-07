@@ -14,24 +14,31 @@ int main()
 {
     PrintIntro();
 
+    // loop for the number of turns asking for guesses
+    constexpr int NUMBER_OF_TURNS = 5;
+    for (int count = 1; count <= NUMBER_OF_TURNS; count++)
+    {
     GetGuessAndPrintBack();
-    GetGuessAndPrintBack();
-
     cout << endl;
+    }
+    
     return 0;
 }
 
 // introduce the game
-void PrintIntro() {
+void PrintIntro() 
+{
     constexpr int WORLD_LENGTH = 5;
     cout << "Welcome to Bulls and Cows, a fun word game!\n";
     cout << "Can you guess the " << WORLD_LENGTH;
     cout << " letter isogram I'm thinking of?\n";
     cout << endl;
+    return;
 }
 
 // get a guess from the player
-string GetGuessAndPrintBack() {
+string GetGuessAndPrintBack() 
+{
     cout << "Enter your guess: ";
     string Guess = "";
     getline(cin, Guess);
