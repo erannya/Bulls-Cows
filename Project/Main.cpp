@@ -1,77 +1,104 @@
-﻿/* This is the console executable, that makes use of the BullCow class
-This acts as the view in a MVC pattern, and is responsible for all
-user interaction. For game logic see the FBullCowGame class.*/
-
-#include <iostream>
-#include <string>
+﻿#include <iostream>
+#include <string>	
 #include "FBullCowGame.h"
-
 using FText = std::string;
 using int32 = int;
-
 void PrintIntro();
 void PlayGame();
-FText GetGuess();
+FText GetValidGuess();
 bool AskToPlayAgain();
+void PrintGameSummary();
 
-FBullCowGame BCGame;
+FBullCowGame BCGame; // nowa gra
 
-// the entry point for our application
+// punkt wejścia do aplikacji
 int main()
 {
-    bool bPlayAgain = false;
-    do {
-        PrintIntro();
-        PlayGame();
-        bPlayAgain = AskToPlayAgain();
-    } while (bPlayAgain);
-
-    return 0; //exit the application
+	bool bPlayAgain = false;
+	do {
+		PrintIntro();
+		PlayGame();
+		bPlayAgain = AskToPlayAgain();
+	} while (bPlayAgain);
+	return 0; // zamknięcie aplikacji
 }
 
-
-// introduce the game
-void PrintIntro() 
+// przedstawienie gry
+void PrintIntro()
 {
-    constexpr int32 WORD_LENGTH = 9;
-    std::cout << "Witamy w grze Bulls and Cows, najlepszej grze slownej!\n";
-    std::cout << "Czy potrafisz zgadnac " << WORD_LENGTH;
-    std::cout << " literowe slowo, o ktorym wlasnie mysle?\n";
-    std::cout << std::endl;
-    return;
+	std::cout << "\nWitamy w grze Bulls and Cows, najlepszej grze slownej!\n";
+	std::cout << "Czy potrafisz zgadnac " << BCGame.GetHiddenWordLength();
+	std::cout << " literowe slowo, o ktorym wlasnie mysle?\n";
+	std::cout << std::endl;
+	return;
 }
-
-
 void PlayGame()
 {
-    BCGame.Reset();
-    int MaxTries = BCGame.GetMaxTries();
+	BCGame.Reset();
+	int32 MaxTries = BCGame.GetMaxTries();
 
-    // loop for the number of turns asking for guesses
-	for (int32 count = 1; count <= MaxTries; count++) {
-		FText Guess = GetGuess();
-		std::cout << "Twoja propozycja: " << Guess << std::endl;
-		std::cout << std::endl;
+	// pętla z pytaniem o domysły podczas gry
+	// dalsze próby zgadywania
+	while (!BCGame.IsGameWon() && BCGame.GetCurrentTry() <= MaxTries) {
+		FText Guess = GetValidGuess();
+
+		// domysły gry i liczba błędnych i poprawnych liter
+		FBullCowCount BullCowCount = BCGame.SubmitValidGuess(Guess);
+		std::cout << "Bulls = " << BullCowCount.Bulls;
+		std::cout << ". Cows = " << BullCowCount.Cows << "\n\n";
 	}
 
+	PrintGameSummary();
+	return;
 }
 
-
-FText GetGuess()
+// zapętlaj ciągle, aż gracz poprawnie zgadnie
+FText GetValidGuess()
 {
-    int32 CurrentTry = BCGame.GetCurrentTry();
-
-    // get a guess from the player
-    std::cout << "Proba " << CurrentTry << ". Wpisz swoja propozycje: ";
-    FText Guess = "";
-    std::getline(std::cin, Guess);
-    return Guess;
+	FText Guess = "";
+	EGuessStatus Status = EGuessStatus::Invalid_Status;
+	do {
+		// próba zgadnięcia gracza
+		int32 CurrentTry = BCGame.GetCurrentTry();
+		std::cout << "Proba " << CurrentTry << ". Wpisz swoja propzycje: ";
+		std::getline(std::cin, Guess);
+		
+		Status = BCGame.CheckGuessValidity(Guess);
+		switch (Status) {
+		case EGuessStatus::Wrong_Length:
+			std::cout << "Wpisz " << BCGame.GetHiddenWordLength() << " literowe slowo.\n";
+			break;
+		case EGuessStatus::Not_Isogram:
+			std::cout << "Please enter a word witout repeating letters.\n";
+			break;
+		case EGuessStatus::Not_Lowercase:
+			std::cout << "Please enter all lowercase letters.\n";
+			break;
+		default:
+	
+			break;
+		}
+		std::cout << std::endl;
+	} while (Status != EGuessStatus::OK);
+	return Guess;
 }
 
 bool AskToPlayAgain()
 {
-    std::cout << "Chcesz sprobowac jeszcze raz? (Tak/Nie)";
-    FText Response = "";
-    std::getline(std::cin, Response);
-    return (Response[0] == 't') || (Response[0] == 'T');
+	std::cout << "Chcesz sprobowac jeszcze raz odgadnac to samo ukryte slowo (Tak/Nie)? ";
+	FText Response = "";
+	std::getline(std::cin, Response);
+	return (Response[0] == 't') || (Response[0] == 'T');
+}
+
+void PrintGameSummary()
+{
+	if (BCGame.IsGameWon())
+	{
+		std::cout << "Dobra robota! WYGRALES!\n";
+	}
+	else
+	{
+		std::cout << "Powodzenia nastepnym razem!\n";
+	}
 }
